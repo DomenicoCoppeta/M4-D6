@@ -1,48 +1,62 @@
-const requestOptions = { method: 'GET', redirect: 'follow' };
-    const usersLink = 'https://jsonplaceholder.typicode.com/users';
+// Impostazioni per la richiesta
+const requestOptions = {
+    method: 'GET',
+    redirect: 'follow'
+};
 
-    let users = [];
+// URL dell'API degli utenti
+const usersLink = 'https://jsonplaceholder.typicode.com/users';
 
-    async function getUsers() {
-        try {
-            const response = await fetch(usersLink, requestOptions);
-            users = await response.json();
-            showUsers(users);
-        } catch (error) {
-            console.error("Errore" + error.message);
-        }
+// Array per conservare gli utenti
+let users = [];
+
+// Funzione asincrona per ottenere gli utenti dalla richiesta API
+async function getUsers() {
+    try {
+        const response = await fetch(usersLink, requestOptions);
+        users = await response.json();
+        showUsers(users);
+    } catch (error) {
+        console.error("Errore: " + error.message);
     }
+}
 
-    async function showUsers(data) {
-        const tbody = document.querySelector('tbody');
-        tbody.innerHTML = '';
+// Funzione per mostrare gli utenti nella tabella
+async function showUsers(data) {
+    const tbody = document.querySelector('tbody');
+    tbody.innerHTML = '';
 
-        data.forEach((user) => {
-            tbody.innerHTML +=
-                /*html*/
-                `
-                <tr>
-                    <th scope="col-1">${user.id}</th>
-                    <td scope="col-3">${user.email}</td>
-                    <td scope="col-2">${user.username}</td>
-                    <td scope="col-2">${user.name}</td>
-                </tr>
-                `;
-        });
-    }
+    data.forEach((user) => {
+        tbody.innerHTML +=
+            /*html*/
+            `
+            <tr>
+                <th scope="col-1">${user.id}</th>
+                <td scope="col-3">${user.email}</td>
+                <td scope="col-2">${user.username}</td>
+                <td scope="col-2">${user.name}</td>
+            </tr>
+            `;
+    });
+}
 
-    window.onload = getUsers;
+// Alla finestra caricata, ottieni gli utenti
+window.onload = getUsers;
 
-    const dropdown = document.getElementById("dropdown");
-    const textInput = document.getElementById('textInput');
-    dropdown.addEventListener("change", filteredUsers);
-    textInput.addEventListener("input", filteredUsers);
+// Elementi del filtro
+const dropdown = document.getElementById("dropdown");
+const textInput = document.getElementById('textInput');
 
-    function filteredUsers() {
-        const field = dropdown.value;
-        const textFilter = textInput.value.toLowerCase();
-        const filteredUsers = users.filter(user => {
-          switch (field) {
+// Aggiungi gestori di eventi per il cambio nel dropdown e l'input di testo
+dropdown.addEventListener("change", filteredUsers);
+textInput.addEventListener("input", filteredUsers);
+
+// Funzione per filtrare gli utenti in base al campo e al testo inserito
+function filteredUsers() {
+    const field = dropdown.value;
+    const textFilter = textInput.value.toLowerCase();
+    const filteredUsers = users.filter(user => {
+        switch (field) {
             case "all":
                 return user.email.toLowerCase().includes(textFilter) || user.username.toLowerCase().includes(textFilter) || user.name.toLowerCase().includes(textFilter);
             case "email":
@@ -54,11 +68,6 @@ const requestOptions = { method: 'GET', redirect: 'follow' };
             default:
                 return false;
         }
-        });
-        showUsers(filteredUsers);
-    }
-
-
-
-
-
+    });
+    showUsers(filteredUsers);
+}
